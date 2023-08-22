@@ -26,9 +26,9 @@ def get_af2_emb_upd(colabfold_output_dir, use_pairwise: bool):
     return mat
 
 def predict_oligo_state(colabfold_output_dir:  str, use_pairwise: bool):
-    model = joblib.load(f'{root_directory}/src/results/model.p')['clf_0_4_3']  # !!!!!!!!!!!!!!!!!!!
+    model = joblib.load(f'{root_directory}/src/results/model.p')#['clf_0_4_3']  # !!!!!!!!!!!!!!!!!!!
     X = np.asarray([get_af2_emb_upd(colabfold_output_dir, use_pairwise=use_pairwise)]).reshape(1, -1)
-
+    print(model)
     output = model.predict(X)[0]
 
     oligo_dict = {0: "Dimer", 1: "Trimer", 2: "Tetramer"}

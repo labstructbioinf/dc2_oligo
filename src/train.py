@@ -57,24 +57,20 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
             X = np.asarray([get_af2_emb(id_, model_id=i, use_pairwise=use_pairwise) for id_ in df.index])
             y = df['y'].values
 
-            cv = KFold(n_splits=5, shuffle=True)
+            X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2)
 
-            for k, (tr_idx, te_idx) in enumerate(cv.split(X, y)):
-
-                X_tr, X_te = X[tr_idx], X[te_idx]
-                y_tr, y_te = y[tr_idx], y[te_idx]
-
-                if use_scaler == 1:
-                    sc = StandardScaler()
-                    X_tr = sc.fit_transform(X_tr)
-                    X_te = sc.transform(X_te)
-                    model[f"scaler_{j}_{i}_{k}"] = sc
-                clf = LogisticRegression(C=c, max_iter=1000, solver='liblinear',
-                                         dual = False if dual == 0 else True, 
-                                         class_weight = 'balanced' if balanced == 1 else None) 
-                clf.fit(X_tr, y_tr)
-                results[j, i, te_idx, :] = clf.predict_proba(X_te)
-                model[f"clf_{j}_{i}_{k}"] = clf
+            if use_scaler == 1:
+                sc = StandardScaler()
+                X_tr = sc.fit_transform(X_tr)
+                X_te = sc.transform(X_te)
+                model[f"scaler_{j}_{i}"] = sc
+            clf = LogisticRegression(C=c, max_iter=1000, solver='liblinear',
+                                     dual=False if dual == 0 else True,
+                                     class_weight='balanced' if balanced == 1 else None)
+            clf.fit(X_tr, y_tr)
+            print(results.shape, X_te.shape)
+            results = clf.predict_proba(X_te)
+            model[f"clf_{j}_{i}"] = clf
 
 
     y_pred_bin = results.mean(axis=0).mean(axis=0).argmax(axis=1)
