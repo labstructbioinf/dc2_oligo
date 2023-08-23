@@ -69,14 +69,14 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
             clf.fit(X, y)
             # results = clf.predict_proba(X)
             model[f"clf_{j}_{i}"] = clf
-            proba = clf.predict_proba(X)
-            probabilities.append(proba)
+            # proba = clf.predict_proba(X)
+    print(model)
 
 
-    # for i in range(0, 5):
-    #     clf = model[f"clf_{j}_{i}"]
-    #     proba = clf.predict_proba(X)
-    #     probabilities.append(proba)
+    for i in range(0, 5):
+        clf = model[f"clf_0_{i}"]
+        proba = clf.predict_proba(X)
+        probabilities.append(proba)
     
     probabilities = np.array(probabilities)
     # ## iterowac 5 modeli i argmax w pred.py
@@ -84,7 +84,7 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
     avg_proba = np.mean(probabilities, axis=0)
 
     y_pred_bin = avg_proba.argmax(axis=1)
-    joblib.dump(clf, '../data/model.p')
+    joblib.dump(model, '../data/model.p')
 
     results_ = {}
     results_["accuracy"] = accuracy_score(y, y_pred_bin)
@@ -97,8 +97,8 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
     df["prob_dimer"] = avg_proba[:,0]
     df["prob_trimer"] = avg_proba[:,1]
     df["prob_tetramer"] = avg_proba[:, 2]
-    # print(results_)
-    # print(df.loc[df.pdb=='3w8v'])
+    print(results_)
+    print(df.head())
     df.to_csv('../data/results/results.csv')
 
     return results_, model, df
