@@ -12,7 +12,7 @@ git clone https://github.com/labstructbioinf/dc2_oligo
 2. Install all dependencies
 
 ```
-pip install scikit-learn pandas joblib pytest ...
+conda env create -f  environment.yaml
 ```
 
 3. Check if everything works using pytest
