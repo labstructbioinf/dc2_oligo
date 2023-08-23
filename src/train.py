@@ -48,6 +48,7 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
     df['y'] = le.fit_transform(df['chains'])\
 
     results = np.zeros((ensemble_size, 5, len(df), 3))
+    scaler_cache = {}
     model = {}
     probabilities = []
     for j in range(0, ensemble_size):
@@ -63,6 +64,7 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
                 X= sc.fit_transform(X)
                 # X_te = sc.transform(X_te)
                 model[f"scaler_{j}_{i}"] = sc
+                scaler_cache[f"scaler_{j}_{i}"] = sc
             clf = LogisticRegression(C=c, max_iter=1000, solver='liblinear',
                                      dual=False if dual == 0 else True,
                                      class_weight='balanced' if balanced == 1 else None)
@@ -115,8 +117,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     results, model, df = train(args.C, args.balanced, args.dual, args.ensemble_size, args.use_pairwise, args.use_scaler)
-
-
-    os.makedirs("results", exist_ok=True)
-    joblib.dump(model, "results/model.p")
-    df.to_csv(f"results/results.csv")
