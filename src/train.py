@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import argparse
 import glob
-import json
 import joblib
 import os
 
@@ -50,7 +49,7 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
 
     results = np.zeros((ensemble_size, 5, len(df), 3))
     model = {}
-
+    probabilities = []
     for j in range(0, ensemble_size):
         for i in range(0, 5): # 5 since we have 5 AF2 models
 
@@ -68,33 +67,38 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
                                      dual=False if dual == 0 else True,
                                      class_weight='balanced' if balanced == 1 else None)
             clf.fit(X, y)
-            results = clf.predict_proba(X)
+            # results = clf.predict_proba(X)
             model[f"clf_{j}_{i}"] = clf
-    probabilities = []
-    for i in range(0, 5):
-        clf = model[f"clf_{j}_{i}"]
-        proba = clf.predict_proba(X)
-        probabilities.append(proba)
+            proba = clf.predict_proba(X)
+            probabilities.append(proba)
 
-    # Average the predicted probabilities
+
+    # for i in range(0, 5):
+    #     clf = model[f"clf_{j}_{i}"]
+    #     proba = clf.predict_proba(X)
+    #     probabilities.append(proba)
+    
+    probabilities = np.array(probabilities)
+    # ## iterowac 5 modeli i argmax w pred.py
+
     avg_proba = np.mean(probabilities, axis=0)
 
-    # Make the final binary prediction using a threshold
-    threshold = 0.5
-    y_pred_bin = (avg_proba[:, 1] >= threshold).astype(int)
-
-    # y_pred_bin = results.argmax(axis=1)
+    y_pred_bin = avg_proba.argmax(axis=1)
     joblib.dump(clf, '../data/model.p')
 
     results_ = {}
     results_["accuracy"] = accuracy_score(y, y_pred_bin)
     results_["f1"] = f1_score(y, y_pred_bin, average='macro')
+    # print(results_)
 
+
+    # print(clf)
     df["y_pred"] = y_pred_bin
-    df["prob_dimer"] = results[:, 0]
-    df["prob_trimer"] = results[:, 1]
-    df["prob_tetramer"] = results[:, 2]
-    print(results_)
+    df["prob_dimer"] = avg_proba[:,0]
+    df["prob_trimer"] = avg_proba[:,1]
+    df["prob_tetramer"] = avg_proba[:, 2]
+    # print(results_)
+    # print(df.loc[df.pdb=='3w8v'])
     df.to_csv('../data/results/results.csv')
 
     return results_, model, df
