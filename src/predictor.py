@@ -35,10 +35,8 @@ def predict_oligo_state(colabfold_output_dir:  str, use_pairwise: bool):
         results.append(result)
 
     results = np.array(results)
-    print(results)
     avg_proba = np.mean(results, axis=0)
     std_proba = np.std(results, axis=0)
-    print(avg_proba,std_proba)
 
     y_pred_bin = avg_proba.argmax(axis=1)
     # print(avg_proba, std_proba, y_pred_bin)
@@ -51,7 +49,6 @@ def predict_oligo_state(colabfold_output_dir:  str, use_pairwise: bool):
                 'prob_tetramer':avg_proba[:,2],
                 'prob_tetramer_std':std_proba[:,2],
                 'y_pred':y_pred_bin[0],}
-    print(data)
     df = pd.DataFrame(data)
     df.to_csv('oligo_pred.csv')
     oligo_dict = {0: "Dimer", 1: "Trimer", 2: "Tetramer"}
