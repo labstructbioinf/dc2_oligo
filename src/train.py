@@ -42,7 +42,7 @@ def get_af2_emb(id_: int, model_id: int, use_pairwise: bool):
 def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scaler=True):
     
     # Load dataset
-    df = pd.read_csv("data/set4_homooligomers.csv", sep="\t")
+    df = pd.read_csv("../data/set4_homooligomers.csv", sep="\t")
     df = df.drop_duplicates(subset="full_sequence", keep="first")
     
     le = LabelEncoder()
@@ -57,35 +57,45 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
             X = np.asarray([get_af2_emb(id_, model_id=i, use_pairwise=use_pairwise) for id_ in df.index])
             y = df['y'].values
 
-            X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2)
+            # X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2)
 
             if use_scaler == 1:
                 sc = StandardScaler()
-                X_tr = sc.fit_transform(X_tr)
-                X_te = sc.transform(X_te)
+                X= sc.fit_transform(X)
+                # X_te = sc.transform(X_te)
                 model[f"scaler_{j}_{i}"] = sc
             clf = LogisticRegression(C=c, max_iter=1000, solver='liblinear',
                                      dual=False if dual == 0 else True,
                                      class_weight='balanced' if balanced == 1 else None)
-            clf.fit(X_tr, y_tr)
-            print(results.shape, X_te.shape)
-            results = clf.predict_proba(X_te)
+            clf.fit(X, y)
+            results = clf.predict_proba(X)
             model[f"clf_{j}_{i}"] = clf
+    probabilities = []
+    for i in range(0, 5):
+        clf = model[f"clf_{j}_{i}"]
+        proba = clf.predict_proba(X)
+        probabilities.append(proba)
 
+    # Average the predicted probabilities
+    avg_proba = np.mean(probabilities, axis=0)
 
-    y_pred_bin = results.mean(axis=0).mean(axis=0).argmax(axis=1)
-    joblib.dump(clf, 'results/model.p')
+    # Make the final binary prediction using a threshold
+    threshold = 0.5
+    y_pred_bin = (avg_proba[:, 1] >= threshold).astype(int)
+
+    # y_pred_bin = results.argmax(axis=1)
+    joblib.dump(clf, '../data/model.p')
 
     results_ = {}
     results_["accuracy"] = accuracy_score(y, y_pred_bin)
     results_["f1"] = f1_score(y, y_pred_bin, average='macro')
 
     df["y_pred"] = y_pred_bin
-    df["prob_dimer"] = results.mean(axis=0).mean(axis=0)[:, 0]
-    df["prob_trimer"] = results.mean(axis=0).mean(axis=0)[:, 1]
-    df["prob_tetramer"] = results.mean(axis=0).mean(axis=0)[:, 2]
+    df["prob_dimer"] = results[:, 0]
+    df["prob_trimer"] = results[:, 1]
+    df["prob_tetramer"] = results[:, 2]
     print(results_)
-    df.to_csv('results/results.csv')
+    df.to_csv('../data/results/results.csv')
 
     return results_, model, df
 

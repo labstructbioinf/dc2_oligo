@@ -4,9 +4,6 @@ import glob
 import joblib
 import sys
 import os
-root_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-
-sys.path.append(root_directory)
 
 
 def get_af2_emb_upd(colabfold_output_dir, use_pairwise: bool):
@@ -26,14 +23,15 @@ def get_af2_emb_upd(colabfold_output_dir, use_pairwise: bool):
     return mat
 
 def predict_oligo_state(colabfold_output_dir:  str, use_pairwise: bool):
-    model = joblib.load(f'{root_directory}/src/results/model.p')#['clf_0_4_3']  # !!!!!!!!!!!!!!!!!!!
+    model = joblib.load('data/model.p')#['clf_0_4_3']  # !!!!!!!!!!!!!!!!!!!
     X = np.asarray([get_af2_emb_upd(colabfold_output_dir, use_pairwise=use_pairwise)]).reshape(1, -1)
     print(model)
-    output = model.predict(X)[0]
+    output = model.predict(X)
+    print(output)
 
     oligo_dict = {0: "Dimer", 1: "Trimer", 2: "Tetramer"}
 
-    print(f"Predicted oligomer state: {oligo_dict[output]}")
+    print(f"Predicted oligomer state: {oligo_dict[output[0]]}")
 
     return output
 

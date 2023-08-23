@@ -12,7 +12,7 @@ git clone https://github.com/labstructbioinf/dc2_oligo
 2. Install all dependencies
 
 ```
-pip install scikit-learn pandas joblib ...
+pip install scikit-learn pandas joblib pytest ...
 ```
 
 3. Check if everything works using pytest
@@ -36,3 +36,5 @@ python src/predict.py --colabfold_output_dir DIR --use_pairwise BOOL
 ```bash
 python src/predict.py --colabfold_output_dir tests/data/7 --use_pairwise True
 ```
+
+
