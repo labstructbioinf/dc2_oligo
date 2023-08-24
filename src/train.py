@@ -39,8 +39,7 @@ def get_af2_emb(id_: int, model_id: int, use_pairwise: bool):
 
 
 def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scaler=True):
-    
-    # Load dataset
+
     df = pd.read_csv("../data/set4_homooligomers.csv", sep="\t")
     df = df.drop_duplicates(subset="full_sequence", keep="first")
     
@@ -56,23 +55,16 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
 
             X = np.asarray([get_af2_emb(id_, model_id=i, use_pairwise=use_pairwise) for id_ in df.index])
             y = df['y'].values
-
-            # X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2)
-
             if use_scaler == 1:
                 sc = StandardScaler()
                 X= sc.fit_transform(X)
-                # X_te = sc.transform(X_te)
                 model[f"scaler_{j}_{i}"] = sc
                 scaler_cache[f"scaler_{j}_{i}"] = sc
             clf = LogisticRegression(C=c, max_iter=1000, solver='liblinear',
                                      dual=False if dual == 0 else True,
                                      class_weight='balanced' if balanced == 1 else None)
             clf.fit(X, y)
-            # results = clf.predict_proba(X)
             model[f"clf_{j}_{i}"] = clf
-            # proba = clf.predict_proba(X)
-    print(model)
 
 
     for i in range(0, 5):
@@ -81,8 +73,6 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
         probabilities.append(proba)
     
     probabilities = np.array(probabilities)
-    # ## iterowac 5 modeli i argmax w pred.py
-
     avg_proba = np.mean(probabilities, axis=0)
 
     y_pred_bin = avg_proba.argmax(axis=1)
@@ -91,16 +81,10 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
     results_ = {}
     results_["accuracy"] = accuracy_score(y, y_pred_bin)
     results_["f1"] = f1_score(y, y_pred_bin, average='macro')
-    # print(results_)
-
-
-    # print(clf)
     df["y_pred"] = y_pred_bin
     df["prob_dimer"] = avg_proba[:,0]
     df["prob_trimer"] = avg_proba[:,1]
     df["prob_tetramer"] = avg_proba[:, 2]
-    print(results_)
-    print(df.head())
     df.to_csv('../data/results/results.csv')
 
     return results_, model, df

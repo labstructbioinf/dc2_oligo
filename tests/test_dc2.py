@@ -23,6 +23,6 @@ def test_predict_oligo_state():
         test_df = pd.concat([test_df, df], axis=0)
 
     assertion_df = pd.read_csv('tests/test_df.csv').set_index('test_case_index')
-    
+
     assert np.isclose(test_df, assertion_df).all(), 'Test case results do not match assertion results'
 

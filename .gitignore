@@ -1,3 +1,5 @@
 src/__pycache__
 .pytest_cache
 tests/__pycache__
+prep.ipynb
+rmadeye_tmp.ipynb

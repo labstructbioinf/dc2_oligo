@@ -2,15 +2,16 @@ import argparse
 
 from src.predictor import predict_oligo_state
 
-def predict(colabfold_output_dir: str, use_pairwise: bool):
+def predict(cf_results: str, use_pairwise: bool):
     """Predict oligomer state from ColabFold output directory"""
-    return predict_oligo_state(colabfold_output_dir, use_pairwise)
+    return predict_oligo_state(cf_results, use_pairwise)
 
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--colabfold_output_dir", type=str, required=True)
+    parser.add_argument("--cf_results", type=str, required=True)
     parser.add_argument("--use_pairwise", type=bool, default=True)
+    parser.add_argument("--save_csv", type=bool, default=False)
     args = parser.parse_args()
-    predict_oligo_state(args.colabfold_output_dir, args.use_pairwise)
+    predict_oligo_state(args.cf_results, args.use_pairwise, args.save_csv)
