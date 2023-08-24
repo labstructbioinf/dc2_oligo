@@ -3,3 +3,5 @@ src/__pycache__
 tests/__pycache__
 prep.ipynb
 rmadeye_tmp.ipynb
+testcases/
+tmp/

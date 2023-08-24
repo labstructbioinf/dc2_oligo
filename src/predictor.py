@@ -41,7 +41,7 @@ def predict_oligo_state(cf_results:  str, use_pairwise: bool, save_csv: bool = F
     y_pred_bin = avg_proba.argmax(axis=1)
 
     data = {avg_proba[0][0]: std_proba[0][0], avg_proba[0][1]: std_proba[0][1], avg_proba[0][2]: std_proba[0][2]}
-    data = {'prob_dimer':avg_proba[:,1],
+    data = {'prob_dimer':avg_proba[:,0],
             'prob_dimer_std':std_proba[:,0],
              'prob_trimer':avg_proba[:,1],
                 'prob_trimer_std':std_proba[:,1],
