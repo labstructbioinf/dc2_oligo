@@ -1,0 +1,31 @@
+2023-03-03 22:08:38,624 Running colabfold 1.5.1 (de43bbb9fb03e2caaaf77348f0002cd9e4cb7d7e)
+2023-03-03 22:08:40,661 Running on GPU
+2023-03-03 22:08:40,984 Found 4 citations for tools or databases
+2023-03-03 22:08:40,985 Query 1/1: 3tq2 (length 35)
+2023-03-03 22:08:41,932 Sleeping for 6s. Reason: RATELIMIT
+2023-03-03 22:08:48,900 Sleeping for 7s. Reason: RATELIMIT
+2023-03-03 22:08:56,865 Sleeping for 5s. Reason: RATELIMIT
+2023-03-03 22:09:03,868 Padding length to 35
+2023-03-03 22:09:03,871 Setting max_seq=2, max_extra_seq=1
+2023-03-03 22:09:30,031 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=86.1 pTM=0.474
+2023-03-03 22:09:30,984 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=82.7 pTM=0.423 tol=0.342
+2023-03-03 22:09:30,985 alphafold2_multimer_v3_model_1_seed_000 took 24.2s (1 recycles)
+2023-03-03 22:09:31,964 alphafold2_multimer_v3_model_2_seed_000 recycle=0 pLDDT=82.5 pTM=0.479
+2023-03-03 22:09:32,810 alphafold2_multimer_v3_model_2_seed_000 recycle=1 pLDDT=80.6 pTM=0.441 tol=0.312
+2023-03-03 22:09:32,811 alphafold2_multimer_v3_model_2_seed_000 took 1.7s (1 recycles)
+2023-03-03 22:09:33,804 alphafold2_multimer_v3_model_3_seed_000 recycle=0 pLDDT=87.2 pTM=0.509
+2023-03-03 22:09:34,651 alphafold2_multimer_v3_model_3_seed_000 recycle=1 pLDDT=89.4 pTM=0.509 tol=0.129
+2023-03-03 22:09:34,652 alphafold2_multimer_v3_model_3_seed_000 took 1.7s (1 recycles)
+2023-03-03 22:09:35,628 alphafold2_multimer_v3_model_4_seed_000 recycle=0 pLDDT=87.8 pTM=0.534
+2023-03-03 22:09:36,473 alphafold2_multimer_v3_model_4_seed_000 recycle=1 pLDDT=88.4 pTM=0.534 tol=0.0921
+2023-03-03 22:09:36,474 alphafold2_multimer_v3_model_4_seed_000 took 1.7s (1 recycles)
+2023-03-03 22:09:37,455 alphafold2_multimer_v3_model_5_seed_000 recycle=0 pLDDT=83.2 pTM=0.494
+2023-03-03 22:09:38,301 alphafold2_multimer_v3_model_5_seed_000 recycle=1 pLDDT=85.8 pTM=0.515 tol=0.271
+2023-03-03 22:09:38,301 alphafold2_multimer_v3_model_5_seed_000 took 1.7s (1 recycles)
+2023-03-03 22:09:38,380 reranking models by 'plddt' metric
+2023-03-03 22:09:38,381 rank_001_alphafold2_multimer_v3_model_3_seed_000 pLDDT=89.4 pTM=0.509
+2023-03-03 22:09:38,386 rank_002_alphafold2_multimer_v3_model_4_seed_000 pLDDT=88.4 pTM=0.534
+2023-03-03 22:09:38,391 rank_003_alphafold2_multimer_v3_model_5_seed_000 pLDDT=85.8 pTM=0.515
+2023-03-03 22:09:38,396 rank_004_alphafold2_multimer_v3_model_1_seed_000 pLDDT=82.7 pTM=0.423
+2023-03-03 22:09:38,401 rank_005_alphafold2_multimer_v3_model_2_seed_000 pLDDT=80.6 pTM=0.441
+2023-03-03 22:09:40,523 Done

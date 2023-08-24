@@ -1,0 +1,63 @@
+2023-03-03 22:10:08,603 Running colabfold 1.5.1 (de43bbb9fb03e2caaaf77348f0002cd9e4cb7d7e)
+2023-03-03 22:10:10,662 Running on GPU
+2023-03-03 22:10:10,941 Found 4 citations for tools or databases
+2023-03-03 22:10:10,941 Query 1/1: 5kkv (length 32)
+2023-03-03 22:10:11,932 Sleeping for 6s. Reason: RATELIMIT
+2023-03-03 22:10:18,888 Sleeping for 10s. Reason: RATELIMIT
+2023-03-03 22:10:35,249 Timeout while submitting to MSA server. Retrying...
+2023-03-03 22:10:36,185 Sleeping for 5s. Reason: RATELIMIT
+2023-03-03 22:10:42,147 Sleeping for 9s. Reason: RATELIMIT
+2023-03-03 22:10:52,093 Sleeping for 5s. Reason: RATELIMIT
+2023-03-03 22:10:58,033 Sleeping for 6s. Reason: RATELIMIT
+2023-03-03 22:11:05,002 Sleeping for 9s. Reason: RATELIMIT
+2023-03-03 22:11:14,956 Sleeping for 8s. Reason: RATELIMIT
+2023-03-03 22:11:23,875 Sleeping for 6s. Reason: RATELIMIT
+2023-03-03 22:11:30,841 Sleeping for 6s. Reason: RATELIMIT
+2023-03-03 22:11:37,763 Sleeping for 6s. Reason: RATELIMIT
+2023-03-03 22:11:44,731 Sleeping for 7s. Reason: RATELIMIT
+2023-03-03 22:11:52,684 Sleeping for 8s. Reason: RATELIMIT
+2023-03-03 22:12:01,562 Sleeping for 8s. Reason: RATELIMIT
+2023-03-03 22:12:10,496 Sleeping for 9s. Reason: RATELIMIT
+2023-03-03 22:12:20,488 Sleeping for 7s. Reason: RATELIMIT
+2023-03-03 22:12:28,505 Sleeping for 8s. Reason: RATELIMIT
+2023-03-03 22:12:37,458 Sleeping for 6s. Reason: RATELIMIT
+2023-03-03 22:12:44,424 Sleeping for 10s. Reason: RATELIMIT
+2023-03-03 22:12:55,299 Sleeping for 9s. Reason: RATELIMIT
+2023-03-03 22:13:05,262 Sleeping for 9s. Reason: RATELIMIT
+2023-03-03 22:13:15,197 Sleeping for 9s. Reason: RATELIMIT
+2023-03-03 22:13:25,139 Sleeping for 6s. Reason: RATELIMIT
+2023-03-03 22:13:32,116 Sleeping for 5s. Reason: RATELIMIT
+2023-03-03 22:13:38,072 Sleeping for 7s. Reason: RATELIMIT
+2023-03-03 22:13:45,971 Sleeping for 5s. Reason: RATELIMIT
+2023-03-03 22:13:51,944 Sleeping for 6s. Reason: RATELIMIT
+2023-03-03 22:13:58,896 Sleeping for 7s. Reason: RATELIMIT
+2023-03-03 22:14:06,845 Sleeping for 10s. Reason: RATELIMIT
+2023-03-03 22:14:17,826 Sleeping for 7s. Reason: RATELIMIT
+2023-03-03 22:14:25,807 Sleeping for 9s. Reason: RATELIMIT
+2023-03-03 22:14:35,796 Sleeping for 8s. Reason: RATELIMIT
+2023-03-03 22:14:44,755 Sleeping for 7s. Reason: RATELIMIT
+2023-03-03 22:14:52,737 Sleeping for 9s. Reason: RATELIMIT
+2023-03-03 22:15:03,809 Padding length to 32
+2023-03-03 22:15:03,810 Setting max_seq=157, max_extra_seq=1
+2023-03-03 22:15:29,436 alphafold2_multimer_v3_model_1_seed_000 recycle=0 pLDDT=95 pTM=0.517
+2023-03-03 22:15:32,307 alphafold2_multimer_v3_model_1_seed_000 recycle=1 pLDDT=94.9 pTM=0.512 tol=0.201
+2023-03-03 22:15:32,309 alphafold2_multimer_v3_model_1_seed_000 took 25.6s (1 recycles)
+2023-03-03 22:15:35,374 alphafold2_multimer_v3_model_2_seed_000 recycle=0 pLDDT=94.2 pTM=0.514
+2023-03-03 22:15:38,112 alphafold2_multimer_v3_model_2_seed_000 recycle=1 pLDDT=94.7 pTM=0.523 tol=0.166
+2023-03-03 22:15:38,113 alphafold2_multimer_v3_model_2_seed_000 took 5.5s (1 recycles)
+2023-03-03 22:15:40,984 alphafold2_multimer_v3_model_3_seed_000 recycle=0 pLDDT=94.9 pTM=0.527
+2023-03-03 22:15:43,720 alphafold2_multimer_v3_model_3_seed_000 recycle=1 pLDDT=95.1 pTM=0.532 tol=0.113
+2023-03-03 22:15:43,721 alphafold2_multimer_v3_model_3_seed_000 took 5.5s (1 recycles)
+2023-03-03 22:15:46,627 alphafold2_multimer_v3_model_4_seed_000 recycle=0 pLDDT=94.4 pTM=0.525
+2023-03-03 22:15:49,362 alphafold2_multimer_v3_model_4_seed_000 recycle=1 pLDDT=94.9 pTM=0.533 tol=0.0848
+2023-03-03 22:15:49,363 alphafold2_multimer_v3_model_4_seed_000 took 5.5s (1 recycles)
+2023-03-03 22:15:52,235 alphafold2_multimer_v3_model_5_seed_000 recycle=0 pLDDT=93.5 pTM=0.498
+2023-03-03 22:15:54,969 alphafold2_multimer_v3_model_5_seed_000 recycle=1 pLDDT=94.2 pTM=0.512 tol=0.259
+2023-03-03 22:15:54,970 alphafold2_multimer_v3_model_5_seed_000 took 5.5s (1 recycles)
+2023-03-03 22:15:55,074 reranking models by 'plddt' metric
+2023-03-03 22:15:55,074 rank_001_alphafold2_multimer_v3_model_3_seed_000 pLDDT=95.1 pTM=0.532
+2023-03-03 22:15:55,109 rank_002_alphafold2_multimer_v3_model_1_seed_000 pLDDT=94.9 pTM=0.512
+2023-03-03 22:15:55,144 rank_003_alphafold2_multimer_v3_model_4_seed_000 pLDDT=94.9 pTM=0.533
+2023-03-03 22:15:55,150 rank_004_alphafold2_multimer_v3_model_2_seed_000 pLDDT=94.7 pTM=0.523
+2023-03-03 22:15:55,155 rank_005_alphafold2_multimer_v3_model_5_seed_000 pLDDT=94.2 pTM=0.512
+2023-03-03 22:15:57,352 Done
