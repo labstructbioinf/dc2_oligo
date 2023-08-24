@@ -25,16 +25,17 @@ pytest
 ### **Usage** ###
 
 ```bash
-python src/predict.py --colabfold_output_dir DIR --use_pairwise BOOL
+python predict.py --cf_results DIR --use_pairwise BOOL --save_csv BOOL
 
  ```
  | Argument        | Description |
 |:-------------:|-------------|
-| **`--colabfold_output_dir`** | Colabfold output directory with saved embeddings via --save-representations option |
+| **`--cf_results`** | Colabfold output directory with saved embeddings via --save-representations option |
 | **`--use_pairwise`** | Flag for using sorting pair representations
+| **`--save_csv`** | Flag for saving output to csv file
 
 ```bash
-python src/predict.py --colabfold_output_dir tests/data/7 --use_pairwise True
+python predict.py --cf_results tests/data/0 --use_pairwise True --save_csv False
 ```
 
 
