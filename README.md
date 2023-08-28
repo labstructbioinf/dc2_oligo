@@ -25,7 +25,7 @@ pytest
 ### **Usage** ###
 
 ```bash
-python predict.py --cf_results DIR --use_pairwise BOOL --save_csv BOOL
+python predict.py --cf_results DIR --save_csv BOOL
 
  ```
  | Argument        | Description |

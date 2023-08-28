@@ -98,7 +98,7 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
     df["prob_dimer"] = avg_proba[:,0]
     df["prob_trimer"] = avg_proba[:,1]
     df["prob_tetramer"] = avg_proba[:, 2]
-    df.to_csv('../data/results/results.csv')
+    df.to_csv('../model/results.csv')
 
     return results_, model, df
 
