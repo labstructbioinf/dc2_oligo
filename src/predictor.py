@@ -33,7 +33,7 @@ def get_af2_emb(cf_results: str, model_id: int, use_pairwise: bool):
     
     return mat
 
-def predict_oligo_state(cf_results:  str, use_pairwise: bool, save_csv: bool = False):
+def predict_oligo_state(cf_results:  str, use_pairwise: bool, save_csv: str=''):
     """
     Predict the oligomer state using a trained model and return results as a DataFrame.
     
@@ -64,18 +64,20 @@ def predict_oligo_state(cf_results:  str, use_pairwise: bool, save_csv: bool = F
     data = {avg_proba[0][0]: std_proba[0][0], avg_proba[0][1]: std_proba[0][1], avg_proba[0][2]: std_proba[0][2]}
     data = {'prob_dimer':avg_proba[:,0],
             'prob_dimer_std':std_proba[:,0],
-             'prob_trimer':avg_proba[:,1],
-                'prob_trimer_std':std_proba[:,1],
-                'prob_tetramer':avg_proba[:,2],
-                'prob_tetramer_std':std_proba[:,2],
-                'y_pred':y_pred_bin[0],}
+            'prob_trimer':avg_proba[:,1],
+            'prob_trimer_std':std_proba[:,1],
+            'prob_tetramer':avg_proba[:,2],
+            'prob_tetramer_std':std_proba[:,2],
+            'y_pred':y_pred_bin[0],}
     df = pd.DataFrame(data)
     oligo_dict = {0: "Dimer", 1: "Trimer", 2: "Tetramer"}
 
     print(f"Predicted oligomer state: {oligo_dict[y_pred_bin[0]]} ({y_pred_bin[0]}) with probability \
           {round(avg_proba[0][y_pred_bin[0]],5)} +/- {round(std_proba[0][y_pred_bin[0]],5)}")
-    if save_csv:
-        dir_name = os.path.basename(cf_results)
-        df.to_csv(f"{cf_results}/{dir_name}_dc2_oligo.csv")
+    if not save_csv.endswith('.csv'):
+        save_csv += '.csv'
+        df.to_csv(f"{cf_results}/{save_csv}")
+    else:
+        df.to_csv(f"{cf_results}/{save_csv}")
 
     return df

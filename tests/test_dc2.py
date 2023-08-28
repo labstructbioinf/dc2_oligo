@@ -4,11 +4,6 @@ import glob
 import pandas as pd
 import numpy as np
 
-root_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-
-sys.path.append(root_directory)
-
-
 import pytest
 
 from src.predictor import predict_oligo_state

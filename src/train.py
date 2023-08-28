@@ -12,29 +12,6 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 CALC_PATHS = ''
 
-
-def get_x(id_: int, rank: int, model: str = "af2", 
-          use_pairwise: bool = True):
-    """
-    Get embeddings from ColabFold output directory.
-
-    Parameters:
-        id_ (int): Sequence ID.
-        rank (int): Rank of the embedding.
-        model (str, optional): Model name. Defaults to "af2".
-        use_pairwise (bool, optional): Whether to include pairwise embeddings. Defaults to True.
-
-    Returns:
-        np.ndarray: Array containing the embeddings.
-    """
-    single_repr_fns = sorted(glob.glob(f"{CALC_PATHS}/{id_}/*_single_repr_rank_00*"))
-    pair_repr_fns = sorted(glob.glob(f"{CALC_PATHS}{id_}/*_pair_repr_rank_00*"))
-    
-    mat = np.load(single_repr_fns[rank]).mean(axis=0)
-    if use_pairwise:
-        mat = np.hstack((mat, np.load(pair_repr_fns[rank]).mean(axis=0).mean(axis=0)))
-    return mat
-
 def get_af2_emb(id_: int, model_id: int, use_pairwise: bool):
     """
     Get AF2 embeddings from ColabFold output directory.
