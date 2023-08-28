@@ -7,8 +7,18 @@ from sklearn.preprocessing import StandardScaler
 import numpy as np
 
 
-def get_af2_emb_upd(cf_results: str, model_id: int, use_pairwise: bool):
-    """Get AF2 embeddings from ColabFold output directory"""
+def get_af2_emb(cf_results: str, model_id: int, use_pairwise: bool):
+    """
+    Get AF2 embeddings from ColabFold output directory.
+
+    Parameters:
+        cf_results (str): Path to the ColabFold output directory.
+        model_id (int): Model ID to retrieve embeddings from.
+        use_pairwise (bool): Whether to include pairwise embeddings.
+
+    Returns:
+        np.ndarray: Array containing the AF2 embeddings.
+    """
 
 
     representations = sorted(glob.glob(f"{cf_results}/*_repr*_rank*_model_{model_id+1}_*"))
@@ -24,11 +34,22 @@ def get_af2_emb_upd(cf_results: str, model_id: int, use_pairwise: bool):
     return mat
 
 def predict_oligo_state(cf_results:  str, use_pairwise: bool, save_csv: bool = False):
+    """
+    Predict the oligomer state using a trained model and return results as a DataFrame.
+    
+    Parameters:
+        cf_results (str): Path to the ColabFold output directory.
+        use_pairwise (bool): Whether to include pairwise embeddings.
+        save_csv (bool, optional): Whether to save the prediction results as a CSV file (default: False).
+        
+    Returns:
+        pd.DataFrame: DataFrame containing prediction results for different oligomer states.
+    """
     df = pd.DataFrame()
     model = joblib.load('model/model.p')
     results = []
     for i in range(0,5):
-        X = np.asarray([get_af2_emb_upd(cf_results, model_id = i, use_pairwise=use_pairwise)])
+        X = np.asarray([get_af2_emb(cf_results, model_id = i, use_pairwise=use_pairwise)])
         sc = model[f'scaler_0_{i}']
         X= sc.transform(X)
         result = model[f'clf_0_{i}'].predict_proba(X)
@@ -56,4 +77,5 @@ def predict_oligo_state(cf_results:  str, use_pairwise: bool, save_csv: bool = F
     if save_csv:
         dir_name = os.path.basename(cf_results)
         df.to_csv(f"{cf_results}/{dir_name}_dc2_oligo.csv")
+
     return df
