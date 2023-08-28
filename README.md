@@ -31,7 +31,7 @@ python predict.py --cf_results DIR --use_pairwise BOOL --save_csv BOOL
  | Argument        | Description |
 |:-------------:|-------------|
 | **`--cf_results`** | Colabfold output directory with saved embeddings via --save-representations option |
-| **`--save_csv`** | Flag for saving output to csv file
+| **`--save_csv`** | Save csv by input filename|
 
 ```bash
 python predict.py --cf_results tests/data/0 --save_csv testoutput.csv
