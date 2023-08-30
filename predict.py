@@ -11,7 +11,11 @@ def predict(cf_results: str, use_pairwise: bool):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--cf_results", type=str, required=True)
-    parser.add_argument("--use_pairwise", type=bool, default=True)
-    parser.add_argument("--save_csv", type=str, default=False)
+    parser.add_argument("--save_csv", type=str, default=None, required=False)
+    parser.add_argument("--predict_topology", action="store_true", default=False, required=False)
     args = parser.parse_args()
-    predict_oligo_state_and_topology(args.cf_results, args.use_pairwise, args.save_csv)
+    print(args.save_csv)
+    predict_oligo_state_and_topology(
+        cf_results=args.cf_results, 
+        save_csv=args.save_csv,
+        predict_topology=args.predict_topology)
