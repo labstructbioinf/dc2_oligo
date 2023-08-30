@@ -14,7 +14,6 @@ if __name__ == "__main__":
     parser.add_argument("--save_csv", type=str, default=None, required=False)
     parser.add_argument("--predict_topology", action="store_true", default=False, required=False)
     args = parser.parse_args()
-    print(args.save_csv)
     predict_oligo_state_and_topology(
         cf_results=args.cf_results, 
         save_csv=args.save_csv,
