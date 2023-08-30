@@ -3,15 +3,15 @@ import numpy as np
 import argparse
 import glob
 import joblib
-import json
-import wandb
 import os
+import wandb
 
-# from sklearn.model_selection import KFold, train_test_split
+from sklearn.model_selection import KFold, train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-CALC_PATHS = '/home/nfs/jludwiczak/af2_cc/af2_multimer/calc'
+
+CALC_PATHS = '../calc'
 
 def get_af2_emb(id_: int, model_id: int, use_pairwise: bool):
     """
@@ -28,7 +28,6 @@ def get_af2_emb(id_: int, model_id: int, use_pairwise: bool):
     
     single_repr_fns = sorted(glob.glob(f"{CALC_PATHS}/{id_}/*_single_repr_rank_*_model_{model_id+1}_*"))
     pair_repr_fns = sorted(glob.glob(f"{CALC_PATHS}/{id_}/*_pair_repr_rank_*_model_{model_id+1}_*"))
-    
 
     mat = np.load(single_repr_fns[0]).mean(axis=0)
     
@@ -54,14 +53,13 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
         dict: Dictionary containing training results, trained models, and DataFrame with results.
     """
 
-    df = pd.read_csv("../tests/set4_homooligomers.csv", sep="\t")
-    df = df.drop_duplicates(subset="full_sequence", keep="first")
+    df = pd.read_csv("../dataset_5/set5_homooligomers.csv", sep="\t")
+    # df = df.drop_duplicates(subset="full_sequence", keep="first")
     
     le = LabelEncoder()
     df['y'] = le.fit_transform(df['chains'])\
 
     results = np.zeros((ensemble_size, 5, len(df), 3))
-    scaler_cache = {}
     model = {}
     probabilities = []
     for j in range(0, ensemble_size):
@@ -69,42 +67,46 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
 
             X = np.asarray([get_af2_emb(id_, model_id=i, use_pairwise=use_pairwise) for id_ in df.index])
             y = df['y'].values
+
+            cv = KFold(n_splits=5, shuffle=True)
+
+            for k, (tr_idx, te_idx) in enumerate(cv.split(X, y)):
+
+                X_tr, X_te = X[tr_idx], X[te_idx]
+                y_tr, y_te = y[tr_idx], y[te_idx]
+
             if use_scaler == 1:
                 sc = StandardScaler()
-                X= sc.fit_transform(X)
-                model[f"scaler_{j}_{i}"] = sc
-                scaler_cache[f"scaler_{j}_{i}"] = sc
+                X_tr = sc.fit_transform(X_tr)
+                X_te = sc.transform(X_te)
+                model[f"scaler_{j}_{i}_{k}"] = sc
             clf = LogisticRegression(C=c, max_iter=1000, solver='liblinear',
                                      dual=False if dual == 0 else True,
                                      class_weight='balanced' if balanced == 1 else None)
-            clf.fit(X, y)
-            model[f"clf_{j}_{i}"] = clf
+            clf.fit(X_tr, y_tr)
+            results[j, i, te_idx, :] = clf.predict_proba(X_te)
+            model[f"clf_{j}_{i}_{k}"] = clf
 
 
-    for i in range(0, 5):
-        clf = model[f"clf_0_{i}"]
-        proba = clf.predict_proba(X)
-        probabilities.append(proba)
+    # for i in range(0, 5):
+    #     clf = model[f"clf_0_{i}"]
+    #     proba = clf.predict_proba(X)
+    #     probabilities.append(proba)
     
-    probabilities = np.array(probabilities)
-    avg_proba = np.mean(probabilities, axis=0)
-
-    y_pred_bin = avg_proba.argmax(axis=1)
-    joblib.dump(model, '../model/model.p')
-
+    y_pred_bin = results.mean(axis=0).mean(axis=0).argmax(axis=1)
     results_ = {}
     results_["accuracy"] = accuracy_score(y, y_pred_bin)
     results_["f1"] = f1_score(y, y_pred_bin, average='macro')
-    df["y_pred"] = y_pred_bin
-    df["prob_dimer"] = avg_proba[:,0]
-    df["prob_trimer"] = avg_proba[:,1]
-    df["prob_tetramer"] = avg_proba[:, 2]
-    # df.to_csv('../model/results.csv')
-    print(results_)
-
     # wandb.log({
     #     'f1': results_["f1"], 
     #     'accuracy': results_["accuracy"]})
+    df["y_pred"] = y_pred_bin
+    df["prob_dimer"] = results.mean(axis=0).mean(axis=0)[:, 0]
+    df["prob_trimer"] = results.mean(axis=0).mean(axis=0)[:, 1]
+    df["prob_tetramer"] = results.mean(axis=0).mean(axis=0)[:, 2]
+    joblib.dump(model, f"../model/model.p")
+    df.to_csv('../model/results.csv')
+    print(results_)
 
     return results_, model, df
 
@@ -118,28 +120,6 @@ if __name__ == "__main__":
     parser.add_argument('--use_scaler', type=int, default=1)
     parser.add_argument('--use_pairwise', type=int, default=1)
     args = parser.parse_args()
-    
-    # results, model, df = train(args.C, args.balanced, args.dual, args.ensemble_size, args.use_pairwise, args.use_scaler)
-
     # run = wandb.init()
-    # api = wandb.Api()
 
-    # run = api.run("rafal-madaj/dc2_oligo/1")
-    # run.update()
     results, model, df = train(args.C, args.balanced, args.dual, args.ensemble_size, args.use_pairwise, args.use_scaler)
-    # config = {
-    #     "C": [1, 2, 5, 10],
-    #     "dual": [0,1],
-    #     "balanced": [0,1],
-    #     "ensemble_size": [1,2,5,10],
-    #     "use_scaler": [1],
-    #     "use_pairwise": [0,1]
-    # }
-    # os.makedirs(f"runs/{1}", exist_ok=True)
-    # with open(f"runs/{1}/config.json", "w") as f:
-    #     json.dump(vars(args), f, indent=4)
-    # joblib.dump(model, f"runs/{run.id}/model.p")
-    # df.to_csv(f"runs/{1}/results.csv")
-
-
-

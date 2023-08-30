@@ -5,3 +5,9 @@ prep.ipynb
 rmadeye_tmp.ipynb
 testcases/
 tmp/
+calc/
+wandb/
+__pycache__
+
+.vscode/settings.json
+.vscode/

@@ -74,7 +74,7 @@ def predict_oligo_state(cf_results:  str, use_pairwise: bool, save_csv: str=''):
 
     print(f"Predicted oligomer state: {oligo_dict[y_pred_bin[0]]} ({y_pred_bin[0]}) with probability \
           {round(avg_proba[0][y_pred_bin[0]],5)} +/- {round(std_proba[0][y_pred_bin[0]],5)}")
-    if save_csv != '':
+    if save_csv:
         if not save_csv.endswith('.csv'):
             save_csv += '.csv'
             df.to_csv(f"{cf_results}/{save_csv}")
