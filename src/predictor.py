@@ -33,7 +33,7 @@ def get_af2_emb(cf_results: str, model_id: int, use_pairwise: bool):
     
     return mat
 
-def predict_oligo_state_and_topology(cf_results:  str, use_pairwise: bool, save_csv: str=''):
+def predict_oligo_state_and_topology(cf_results:  str, use_pairwise=True, save_csv: str='', predict_topology: bool=False):
     """
     Predict the oligomer state using a trained model and return results as a DataFrame.
     
@@ -41,6 +41,7 @@ def predict_oligo_state_and_topology(cf_results:  str, use_pairwise: bool, save_
         cf_results (str): Path to the ColabFold output directory.
         use_pairwise (bool): Whether to include pairwise embeddings.
         save_csv (bool, optional): Whether to save the prediction results as a CSV file (default: False).
+        predict_topology (bool, optional): Whether to predict the topology (default: False).
         
     Returns:
         pd.DataFrame: DataFrame containing prediction results for different oligomer states.
@@ -68,30 +69,55 @@ def predict_oligo_state_and_topology(cf_results:  str, use_pairwise: bool, save_
     y_pred_bin_oligo = avg_proba_oligo.argmax(axis=1)
 
     # data = {avg_proba[0][0]: std_proba[0][0], avg_proba[0][1]: std_proba[0][1], avg_proba[0][2]: std_proba[0][2]}
-    data = {'prob_parallel':avg_proba_parallel[:,1],
-            'prob_parallel_std':std_proba_parallel[:,1],
-            'prob_antiparallel':avg_proba_parallel[:,0],
-            'prob_antiparallel_std':std_proba_parallel[:,0],
-            'y_pred_parallel':y_pred_bin_parallel[0],
-            'prob_dimer':avg_proba_oligo[:,0],
-            'prob_dimer_std':std_proba_oligo[:,0],
-            'prob_trimer':avg_proba_oligo[:,1],
-            'prob_trimer_std':std_proba_oligo[:,1],
-            'prob_tetramer':avg_proba_oligo[:,2],
-            'prob_tetramer_std':std_proba_oligo[:,2],
-            'y_pred_oligo':y_pred_bin_oligo[0],}
-    df = pd.DataFrame(data)
-    oligo_dict = {0: "Dimer", 1: "Trimer", 2: "Tetramer"}
-    parallel_dict = {0: "Antiparallel", 1: "Parallel"}
+    if predict_topology:
+        data = {'prob_parallel':avg_proba_parallel[:,1],
+                'prob_parallel_std':std_proba_parallel[:,1],
+                'prob_antiparallel':avg_proba_parallel[:,0],
+                'prob_antiparallel_std':std_proba_parallel[:,0],
+                'y_pred_parallel':y_pred_bin_parallel[0],
+                'prob_dimer':avg_proba_oligo[:,0],
+                'prob_dimer_std':std_proba_oligo[:,0],
+                'prob_trimer':avg_proba_oligo[:,1],
+                'prob_trimer_std':std_proba_oligo[:,1],
+                'prob_tetramer':avg_proba_oligo[:,2],
+                'prob_tetramer_std':std_proba_oligo[:,2],
+                'y_pred_oligo':y_pred_bin_oligo[0],}
+        df = pd.DataFrame(data)
+        oligo_dict = {0: "Dimer", 1: "Trimer", 2: "Tetramer"}
+        parallel_dict = {0: "Antiparallel", 1: "Parallel"}
 
-    print(f"Predicted oligomer state: {oligo_dict[y_pred_bin_oligo[0]]} ({y_pred_bin_oligo[0]}) with probability \
-          {round(avg_proba_oligo[0][y_pred_bin_oligo[0]],5)} +/- {round(std_proba_oligo[0][y_pred_bin_oligo[0]],5)}\
-           \nPredicted topology: {parallel_dict[y_pred_bin_parallel[0]]} ({y_pred_bin_parallel[0]}) with probability \
-            {round(avg_proba_parallel[0][y_pred_bin_parallel[0]],5)} +/- {round(std_proba_parallel[0][y_pred_bin_parallel[0]],5)}")
-    # if not save_csv.endswith('.csv'):
-    #     save_csv += '.csv'
-    #     df.to_csv(f"{cf_results}/{save_csv}")
-    # else:
-    #     df.to_csv(f"{cf_results}/{save_csv}")
-    # print(df)
-    return df
+        print(f"Predicted oligomer state: {oligo_dict[y_pred_bin_oligo[0]]} ({y_pred_bin_oligo[0]}) with probability \
+            {round(avg_proba_oligo[0][y_pred_bin_oligo[0]],5)} +/- {round(std_proba_oligo[0][y_pred_bin_oligo[0]],5)}\
+            \nPredicted topology: {parallel_dict[y_pred_bin_parallel[0]]} ({y_pred_bin_parallel[0]}) with probability \
+                {round(avg_proba_parallel[0][y_pred_bin_parallel[0]],5)} +/- {round(std_proba_parallel[0][y_pred_bin_parallel[0]],5)}")
+        
+        if save_csv != '':
+            if not save_csv.endswith('.csv'):
+                save_csv += '.csv'
+                df.to_csv(f"{cf_results}/{save_csv}")
+            else:
+                df.to_csv(f"{cf_results}/{save_csv}")
+
+        return df
+    else:
+        data = {'prob_dimer':avg_proba_oligo[:,0],
+                'prob_dimer_std':std_proba_oligo[:,0],
+                'prob_trimer':avg_proba_oligo[:,1],
+                'prob_trimer_std':std_proba_oligo[:,1],
+                'prob_tetramer':avg_proba_oligo[:,2],
+                'prob_tetramer_std':std_proba_oligo[:,2],
+                'y_pred_oligo':y_pred_bin_oligo[0],}
+        df = pd.DataFrame(data)
+        oligo_dict = {0: "Dimer", 1: "Trimer", 2: "Tetramer"}
+
+        print(f"Predicted oligomer state: {oligo_dict[y_pred_bin_oligo[0]]} ({y_pred_bin_oligo[0]}) with probability \
+            {round(avg_proba_oligo[0][y_pred_bin_oligo[0]],5)} +/- {round(std_proba_oligo[0][y_pred_bin_oligo[0]],5)}")
+
+        if save_csv:
+            if not save_csv.endswith('.csv'):
+                save_csv += '.csv'
+                df.to_csv(f"{cf_results}/{save_csv}")
+            else:
+                df.to_csv(f"{cf_results}/{save_csv}")
+
+        return df
