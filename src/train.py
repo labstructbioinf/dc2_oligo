@@ -4,16 +4,14 @@ import argparse
 import glob
 import joblib
 import json
-import wandb
 import os
 
-# from sklearn.model_selection import KFold, train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-CALC_PATHS = '/home/nfs/jludwiczak/af2_cc/af2_multimer/calc'
+CALC_PATHS = '../calc/'
 
-def get_af2_emb(id_: int, model_id: int, use_pairwise: bool):
+def get_af2_emb(id_: int, model_id: int, use_pairwise: bool=False):
     """
     Get AF2 embeddings from ColabFold output directory.
 
@@ -38,7 +36,7 @@ def get_af2_emb(id_: int, model_id: int, use_pairwise: bool):
     return mat
 
 
-def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scaler=True):
+def train(c=10, balanced=0, dual=1, ensemble_size=1, use_scaler=True):
     """
     Train an ensemble of logistic regression models.
 
@@ -54,7 +52,7 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
         dict: Dictionary containing training results, trained models, and DataFrame with results.
     """
 
-    df = pd.read_csv("../tests/set4_homooligomers.csv", sep="\t")
+    df = pd.read_csv("../tests/set5_homooligomers.csv", sep="\t")
     df = df.drop_duplicates(subset="full_sequence", keep="first")
     
     le = LabelEncoder()
@@ -67,7 +65,7 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
     for j in range(0, ensemble_size):
         for i in range(0, 5): # 5 since we have 5 AF2 models
 
-            X = np.asarray([get_af2_emb(id_, model_id=i, use_pairwise=use_pairwise) for id_ in df.index])
+            X = np.asarray([get_af2_emb(id_, model_id=i) for id_ in df.index])
             y = df['y'].values
             if use_scaler == 1:
                 sc = StandardScaler()
@@ -99,12 +97,9 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
     df["prob_dimer"] = avg_proba[:,0]
     df["prob_trimer"] = avg_proba[:,1]
     df["prob_tetramer"] = avg_proba[:, 2]
-    # df.to_csv('../model/results.csv')
+    df.to_csv('../model/results.csv')
     print(results_)
 
-    # wandb.log({
-    #     'f1': results_["f1"], 
-    #     'accuracy': results_["accuracy"]})
 
     return results_, model, df
 
@@ -116,30 +111,8 @@ if __name__ == "__main__":
     parser.add_argument('--balanced', type=int, default=1)
     parser.add_argument('--ensemble_size', type=int, default=1)
     parser.add_argument('--use_scaler', type=int, default=1)
-    parser.add_argument('--use_pairwise', type=int, default=1)
     args = parser.parse_args()
-    
-    # results, model, df = train(args.C, args.balanced, args.dual, args.ensemble_size, args.use_pairwise, args.use_scaler)
 
-    # run = wandb.init()
-    # api = wandb.Api()
-
-    # run = api.run("rafal-madaj/dc2_oligo/1")
-    # run.update()
-    results, model, df = train(args.C, args.balanced, args.dual, args.ensemble_size, args.use_pairwise, args.use_scaler)
-    # config = {
-    #     "C": [1, 2, 5, 10],
-    #     "dual": [0,1],
-    #     "balanced": [0,1],
-    #     "ensemble_size": [1,2,5,10],
-    #     "use_scaler": [1],
-    #     "use_pairwise": [0,1]
-    # }
-    # os.makedirs(f"runs/{1}", exist_ok=True)
-    # with open(f"runs/{1}/config.json", "w") as f:
-    #     json.dump(vars(args), f, indent=4)
-    # joblib.dump(model, f"runs/{run.id}/model.p")
-    # df.to_csv(f"runs/{1}/results.csv")
-
+    results, model, df = train(args.C, args.balanced, args.dual, args.ensemble_size, args.use_scaler)
 
 
