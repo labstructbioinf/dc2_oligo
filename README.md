@@ -37,4 +37,10 @@ python predict.py --cf_results DIR --save_csv BOOL
 python predict.py --cf_results tests/data/0 --save_csv testoutput.csv
 ```
 
+### **Additional information** ##
+
+For optimal usage, enter sequences that contain __coiled coil domain only__. You can easily detect such domain with our main  [__deepcoil__](https://github.com/labstructbioinf/DeepCoil)  predictor.
+
+
+
 
