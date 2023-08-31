@@ -12,7 +12,7 @@ def test_predict_oligo_state():
     test_df = pd.DataFrame()
     test_cases = glob.glob('tests/data/*')
     for i, test_case in enumerate(test_cases):
-        df = predict_oligo_state(test_case, use_pairwise=True)
+        df = predict_oligo_state(test_case)
         df['test_case_index'] = i
         df = df.set_index('test_case_index')
         test_df = pd.concat([test_df, df], axis=0)

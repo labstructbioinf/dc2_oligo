@@ -13,3 +13,5 @@ __pycache__
 .vscode/
 src/train.yaml
 src/train_cv.py
+analyze.ipynb
+analyze.ipynb

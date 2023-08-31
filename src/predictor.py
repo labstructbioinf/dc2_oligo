@@ -33,7 +33,7 @@ def get_af2_emb(cf_results: str, model_id: int, use_pairwise: bool):
     
     return mat
 
-def predict_oligo_state(cf_results:  str, use_pairwise: bool, save_csv: str=''):
+def predict_oligo_state(cf_results:  str, save_csv: str=''):
     """
     Predict the oligomer state using a trained model and return results as a DataFrame.
     
@@ -49,7 +49,7 @@ def predict_oligo_state(cf_results:  str, use_pairwise: bool, save_csv: str=''):
     model = joblib.load('model/model.p')
     results = []
     for i in range(0,5):
-        X = np.asarray([get_af2_emb(cf_results, model_id = i, use_pairwise=use_pairwise)])
+        X = np.asarray([get_af2_emb(cf_results, model_id = i, use_pairwise=False)])
         sc = model[f'scaler_0_{i}']
         X= sc.transform(X)
         result = model[f'clf_0_{i}'].predict_proba(X)
@@ -74,7 +74,7 @@ def predict_oligo_state(cf_results:  str, use_pairwise: bool, save_csv: str=''):
 
     print(f"Predicted oligomer state: {oligo_dict[y_pred_bin[0]]} ({y_pred_bin[0]}) with probability \
           {round(avg_proba[0][y_pred_bin[0]],5)} +/- {round(std_proba[0][y_pred_bin[0]],5)}")
-    if save_csv:
+    if save_csv != '':
         if not save_csv.endswith('.csv'):
             save_csv += '.csv'
             df.to_csv(f"{cf_results}/{save_csv}")
