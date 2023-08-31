@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 import pytest
-
+print(sys.path)
 from src.predictor import predict_oligo_state
 
 def test_predict_oligo_state():

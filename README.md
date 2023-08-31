@@ -19,7 +19,7 @@ conda env create -f  environment.yaml
 
 ```bash
 cd dc2_oligo
-pytest
+python -m pytest
 ```
 
 ### **Usage** ###
