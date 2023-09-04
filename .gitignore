@@ -8,11 +8,7 @@ tmp/
 calc/
 wandb/
 __pycache__
-
 .vscode/settings.json
 .vscode/
-src/train.yaml
 analyze.ipynb
-analyze.ipynb
-pyproject.toml
 edi.txt
