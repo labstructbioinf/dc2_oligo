@@ -77,8 +77,8 @@ def predict_oligo_state(cf_results:  str, save_csv: str=''):
     if save_csv != '':
         if not save_csv.endswith('.csv'):
             save_csv += '.csv'
-            df.to_csv(f"{cf_results}/{save_csv}")
+            df.to_csv(f"{save_csv}")
         else:
-            df.to_csv(f"{cf_results}/{save_csv}")
+            df.to_csv(f"{save_csv}")
 
     return df
