@@ -12,7 +12,6 @@ __pycache__
 .vscode/settings.json
 .vscode/
 src/train.yaml
-src/train_cv.py
 analyze.ipynb
 analyze.ipynb
 pyproject.toml
