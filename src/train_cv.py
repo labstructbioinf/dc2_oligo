@@ -75,17 +75,17 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
                 X_tr, X_te = X[tr_idx], X[te_idx]
                 y_tr, y_te = y[tr_idx], y[te_idx]
 
-            if use_scaler == 1:
-                sc = StandardScaler()
-                X_tr = sc.fit_transform(X_tr)
-                X_te = sc.transform(X_te)
-                model[f"scaler_{j}_{i}_{k}"] = sc
-            clf = LogisticRegression(C=c, max_iter=1000, solver='liblinear',
-                                     dual=False if dual == 0 else True,
-                                     class_weight='balanced' if balanced == 1 else None)
-            clf.fit(X_tr, y_tr)
-            results[j, i, te_idx, :] = clf.predict_proba(X_te)
-            model[f"clf_{j}_{i}_{k}"] = clf
+                if use_scaler == 1:
+                    sc = StandardScaler()
+                    X_tr = sc.fit_transform(X_tr)
+                    X_te = sc.transform(X_te)
+                    model[f"scaler_{j}_{i}_{k}"] = sc
+                clf = LogisticRegression(C=c, max_iter=1000, solver='liblinear',
+                                        dual=False if dual == 0 else True,
+                                        class_weight='balanced' if balanced == 1 else None)
+                clf.fit(X_tr, y_tr)
+                results[j, i, te_idx, :] = clf.predict_proba(X_te)
+                model[f"clf_{j}_{i}_{k}"] = clf
 
 
     # for i in range(0, 5):
