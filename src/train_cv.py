@@ -53,7 +53,7 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
         dict: Dictionary containing training results, trained models, and DataFrame with results.
     """
 
-    df = pd.read_csv("../dataset_5/set5_homooligomers.csv", sep="\t")
+    df = pd.read_csv("../tests/set5_homooligomers.csv", sep="\t")
     # df = df.drop_duplicates(subset="full_sequence", keep="first")
     
     le = LabelEncoder()
@@ -104,8 +104,8 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
     df["prob_dimer"] = results.mean(axis=0).mean(axis=0)[:, 0]
     df["prob_trimer"] = results.mean(axis=0).mean(axis=0)[:, 1]
     df["prob_tetramer"] = results.mean(axis=0).mean(axis=0)[:, 2]
-    joblib.dump(model, f"../model/model.p")
-    df.to_csv('../model/results.csv')
+    joblib.dump(model, f"../model/model_cv.p")
+    df.to_csv('../model/results_cv.csv')
     print(results_)
 
     return results_, model, df

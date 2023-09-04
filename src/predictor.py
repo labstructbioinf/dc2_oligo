@@ -46,7 +46,7 @@ def predict_oligo_state(cf_results:  str, save_csv: str=''):
         pd.DataFrame: DataFrame containing prediction results for different oligomer states.
     """
     df = pd.DataFrame()
-    model = joblib.load('model/model.p')
+    model = joblib.load('model/model.p') # use model/model_cv.p for benchmarking
     results = []
     for i in range(0,5):
         X = np.asarray([get_af2_emb(cf_results, model_id = i, use_pairwise=False)])
