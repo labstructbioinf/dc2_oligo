@@ -12,3 +12,6 @@ __pycache__
 .vscode/
 analyze.ipynb
 edi.txt
+adhoccheck.ipynb
+calc_full
+sdh_test

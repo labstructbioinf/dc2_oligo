@@ -88,7 +88,7 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_scaler=True):
     avg_proba = np.mean(probabilities, axis=0)
 
     y_pred_bin = avg_proba.argmax(axis=1)
-    joblib.dump(model, '../model/model.p')
+    joblib.dump(model, 'dc2_oligo/model/model.p')
 
     results_ = {}
     results_["accuracy"] = accuracy_score(y, y_pred_bin)

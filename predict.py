@@ -1,6 +1,6 @@
 import argparse
 
-from src.predictor import predict_oligo_state
+from dc2_oligo.predictor import predict_oligo_state
 
 def predict(cf_results: str, save_csv: str=''):
     """Predict oligomer state from ColabFold output directory"""

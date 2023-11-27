@@ -1,11 +1,9 @@
-import sys
-import os
 import glob
+
 import pandas as pd
 import numpy as np
 
-import pytest
-from src.predictor import predict_oligo_state
+from dc2_oligo.predictor import predict_oligo_state
 
 def test_predict_oligo_state():
     test_df = pd.DataFrame()

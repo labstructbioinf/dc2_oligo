@@ -46,7 +46,7 @@ def predict_oligo_state(cf_results:  str, save_csv: str=''):
         pd.DataFrame: DataFrame containing prediction results for different oligomer states.
     """
     df = pd.DataFrame()
-    model = joblib.load('model/model.p') # use model/model_cv.p for benchmarking
+    model = joblib.load('dc2_oligo/model/model.p') # use model/model_cv.p for benchmarking
     results = []
     for i in range(0,5):
         X = np.asarray([get_af2_emb(cf_results, model_id = i, use_pairwise=False)])
@@ -74,7 +74,7 @@ def predict_oligo_state(cf_results:  str, save_csv: str=''):
 
     print(f"Predicted oligomer state: {oligo_dict[y_pred_bin[0]]} ({y_pred_bin[0]}) with probability \
           {round(avg_proba[0][y_pred_bin[0]],5)} +/- {round(std_proba[0][y_pred_bin[0]],5)}")
-    if save_csv != None:
+    if save_csv is not None:
         if not save_csv.endswith('.csv'):
             save_csv += '.csv'
             df.to_csv(f"{save_csv}")
