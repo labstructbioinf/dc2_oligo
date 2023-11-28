@@ -92,8 +92,8 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
     df["prob_dimer"] = results.mean(axis=0).mean(axis=0)[:, 0]
     df["prob_trimer"] = results.mean(axis=0).mean(axis=0)[:, 1]
     df["prob_tetramer"] = results.mean(axis=0).mean(axis=0)[:, 2]
-    joblib.dump(model, f"../model/model_cv.p")
-    df.to_csv('../model/results_cv.csv')
+    joblib.dump(model, f"model/model_cv_tmp.p")
+    df.to_csv('model/results_cv_tmp.csv')
     print(results_)
 
     return results_, model, df
@@ -101,9 +101,9 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description='Train script')
-    parser.add_argument('--C', type=float, default=1)
+    parser.add_argument('--C', type=float, default=10)
     parser.add_argument('--dual', type=int, default=1)
-    parser.add_argument('--balanced', type=int, default=1)
+    parser.add_argument('--balanced', type=int, default=0)
     parser.add_argument('--ensemble_size', type=int, default=1)
     parser.add_argument('--use_scaler', type=int, default=1)
     parser.add_argument('--use_pairwise', type=int, default=1)
