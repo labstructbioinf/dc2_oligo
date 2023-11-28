@@ -3,10 +3,8 @@ import numpy as np
 import argparse
 import glob
 import joblib
-import os
-import wandb
 
-from sklearn.model_selection import KFold, train_test_split
+from sklearn.model_selection import KFold
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.preprocessing import LabelEncoder, StandardScaler
@@ -54,7 +52,6 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
     """
 
     df = pd.read_csv("../tests/set5_homooligomers.csv", sep="\t")
-    # df = df.drop_duplicates(subset="full_sequence", keep="first")
     
     le = LabelEncoder()
     df['y'] = le.fit_transform(df['chains'])\
@@ -86,20 +83,11 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
                 clf.fit(X_tr, y_tr)
                 results[j, i, te_idx, :] = clf.predict_proba(X_te)
                 model[f"clf_{j}_{i}_{k}"] = clf
-
-
-    # for i in range(0, 5):
-    #     clf = model[f"clf_0_{i}"]
-    #     proba = clf.predict_proba(X)
-    #     probabilities.append(proba)
     
     y_pred_bin = results.mean(axis=0).mean(axis=0).argmax(axis=1)
     results_ = {}
     results_["accuracy"] = accuracy_score(y, y_pred_bin)
     results_["f1"] = f1_score(y, y_pred_bin, average='macro')
-    # wandb.log({
-    #     'f1': results_["f1"], 
-    #     'accuracy': results_["accuracy"]})
     df["y_pred"] = y_pred_bin
     df["prob_dimer"] = results.mean(axis=0).mean(axis=0)[:, 0]
     df["prob_trimer"] = results.mean(axis=0).mean(axis=0)[:, 1]
@@ -120,6 +108,5 @@ if __name__ == "__main__":
     parser.add_argument('--use_scaler', type=int, default=1)
     parser.add_argument('--use_pairwise', type=int, default=1)
     args = parser.parse_args()
-    # run = wandb.init()
 
     results, model, df = train(args.C, args.balanced, args.dual, args.ensemble_size, args.use_pairwise, args.use_scaler)
