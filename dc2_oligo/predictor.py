@@ -4,6 +4,8 @@ import joblib
 import pandas as pd
 import numpy as np
 
+from dc2_oligo.utils import check_files_presence, check_alphafold_model_type
+
 
 def get_af2_emb(cf_results: str, model_id: int, use_pairwise: bool):
     """
@@ -45,6 +47,8 @@ def predict_oligo_state(cf_results:  str, save_csv: str=None):
     """
     df = pd.DataFrame()
     model = joblib.load('dc2_oligo/model/model_cv.p') # use model/model_cv.p for benchmarking
+    check_files_presence(cf_results)
+    check_alphafold_model_type(cf_results)
     results = []
     for ensemble in range(0,1):
         for i in range(0,5):
