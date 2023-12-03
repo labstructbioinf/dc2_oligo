@@ -5,3 +5,16 @@ prep.ipynb
 rmadeye_tmp.ipynb
 testcases/
 tmp/
+calc/
+wandb/
+__pycache__
+.vscode/settings.json
+.vscode/
+analyze.ipynb
+edi.txt
+adhoccheck.ipynb
+calc_full
+sdh_test
+dc2_oligo/model/model_cv_tmp.p
+dc2_oligo/model/results_cv_tmp.csv
+tests/data
