@@ -20,4 +20,3 @@ def test_predict_oligo_state():
     assert np.isclose(test_df.select_dtypes(include=np.number),
                     assertion_df.select_dtypes(include=np.number),
                     atol=0.1).all(), 'Test case results do not match assertion results'
-

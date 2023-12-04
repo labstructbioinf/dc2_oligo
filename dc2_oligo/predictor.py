@@ -4,7 +4,7 @@ import joblib
 import pandas as pd
 import numpy as np
 
-from dc2_oligo.utils import check_files_presence, check_alphafold_model_type
+from dc2_oligo.utils import check_files_presence, check_alphafold_model_type, get_af2_emb
 
 
 def get_af2_emb(cf_results: str, model_id: int, use_pairwise: bool):
@@ -27,21 +27,21 @@ def get_af2_emb(cf_results: str, model_id: int, use_pairwise: bool):
     pair_repr_fns = sorted([x for  x in representations if "pair" in x])
 
     mat = np.load(single_repr_fns[0]).mean(axis=0)
-    
+
     if use_pairwise:
         mat = np.hstack((mat, np.load(pair_repr_fns[0]).mean(axis=0).mean(axis=0)))
-    
+
     return mat
 
 def predict_oligo_state(cf_results:  str, save_csv: str=None):
     """
     Predict the oligomer state using a trained model and return results as a DataFrame.
-    
+
     Parameters:
         cf_results (str): Path to the ColabFold output directory.
         use_pairwise (bool): Whether to include pairwise embeddings.
         save_csv (str, optional): Whether to save the prediction results as a CSV file (default: False).
-        
+
     Returns:
         pd.DataFrame: DataFrame containing prediction results for different oligomer states.
     """

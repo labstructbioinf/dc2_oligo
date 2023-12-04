@@ -1,41 +1,21 @@
-import pandas as pd
-import numpy as np
 import argparse
 import glob
 import joblib
 
+import pandas as pd
+import numpy as np
 from sklearn.model_selection import KFold
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 
-CALC_PATHS = '../calc'
-
-def get_af2_emb(id_: int, model_id: int, use_pairwise: bool):
-    """
-    Get AF2 embeddings from ColabFold output directory.
-
-    Parameters:
-        cf_results (str): Path to the ColabFold output directory.
-        model_id (int): Model ID to retrieve embeddings from.
-        use_pairwise (bool): Whether to include pairwise embeddings.
-
-    Returns:
-        np.ndarray: Array containing the AF2 embeddings.
-    """
-    
-    single_repr_fns = sorted(glob.glob(f"{CALC_PATHS}/{id_}/*_single_repr_rank_*_model_{model_id+1}_*"))
-    pair_repr_fns = sorted(glob.glob(f"{CALC_PATHS}/{id_}/*_pair_repr_rank_*_model_{model_id+1}_*"))
-
-    mat = np.load(single_repr_fns[0]).mean(axis=0)
-    
-    if use_pairwise:
-        mat = np.hstack((mat, np.load(pair_repr_fns[0]).mean(axis=0).mean(axis=0)))
-    
-    return mat
+from utils import get_af2_emb
 
 
-def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scaler=True):
+def train(
+    af2_embeddings_dir: str = '../calc',c=10, balanced=0, dual=1,
+          ensemble_size=1, use_pairwise=True, use_scaler=True, output_dir: str = None
+          ) -> tuple:
     """
     Train an ensemble of logistic regression models.
 
@@ -52,17 +32,16 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
     """
 
     df = pd.read_csv("../tests/set5_homooligomers.csv", sep="\t")
-    
+
     le = LabelEncoder()
     df['y'] = le.fit_transform(df['chains'])\
 
     results = np.zeros((ensemble_size, 5, len(df), 3))
     model = {}
-    probabilities = []
     for j in range(0, ensemble_size):
         for i in range(0, 5): # 5 since we have 5 AF2 models
 
-            X = np.asarray([get_af2_emb(id_, model_id=i, use_pairwise=use_pairwise) for id_ in df.index])
+            X = np.asarray([get_af2_emb(af2_embeddings_dir,id_=id_, model_id=i, use_pairwise=use_pairwise) for id_ in df.index])
             y = df['y'].values
 
             cv = KFold(n_splits=5, shuffle=True)
@@ -83,7 +62,7 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
                 clf.fit(X_tr, y_tr)
                 results[j, i, te_idx, :] = clf.predict_proba(X_te)
                 model[f"clf_{j}_{i}_{k}"] = clf
-    
+
     y_pred_bin = results.mean(axis=0).mean(axis=0).argmax(axis=1)
     results_ = {}
     results_["accuracy"] = accuracy_score(y, y_pred_bin)
@@ -92,21 +71,26 @@ def train(c=10, balanced=0, dual=1, ensemble_size=1, use_pairwise=True, use_scal
     df["prob_dimer"] = results.mean(axis=0).mean(axis=0)[:, 0]
     df["prob_trimer"] = results.mean(axis=0).mean(axis=0)[:, 1]
     df["prob_tetramer"] = results.mean(axis=0).mean(axis=0)[:, 2]
-    joblib.dump(model, f"model/model_cv_tmp.p")
-    df.to_csv('model/results_cv_tmp.csv')
+    if output_dir:
+        joblib.dump(model, f"{output_dir}/model.p")
+        df.to_csv(f'{output_dir}/results.csv')
     print(results_)
 
     return results_, model, df
 
 if __name__ == "__main__":
-    
+
     parser = argparse.ArgumentParser(description='Train script')
+    parser.add_argument('--af2_embeddings_dir', type=str, default='../calc')
     parser.add_argument('--C', type=float, default=10)
     parser.add_argument('--dual', type=int, default=1)
     parser.add_argument('--balanced', type=int, default=0)
     parser.add_argument('--ensemble_size', type=int, default=1)
     parser.add_argument('--use_scaler', type=int, default=1)
     parser.add_argument('--use_pairwise', type=int, default=1)
+    parser.add_argument('--output_dir', type=str, default=None)
+
     args = parser.parse_args()
 
-    results, model, df = train(args.C, args.balanced, args.dual, args.ensemble_size, args.use_pairwise, args.use_scaler)
+    results, model, df = train(args.af2_embeddings_dir, args.C, args.balanced, args.dual,
+                               args.ensemble_size, args.use_pairwise, args.use_scaler, args.output_dir)
