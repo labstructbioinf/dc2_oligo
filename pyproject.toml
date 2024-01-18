@@ -3,7 +3,7 @@ name = "dc2-oligo"
 version = "0.1.0"
 description = "A package for oligomeric state prediction of coiled-coil domain embeddings from AlphaFold2"
 authors = ["Rafal Madaj <r.madaj@uw.edu.pl>",
-"Jan Ludwiczak <j.ludwiczak@tuta.io>"]
+"Jan Ludwiczak"]
 license = "MIT"
 readme = "README.md"
 
