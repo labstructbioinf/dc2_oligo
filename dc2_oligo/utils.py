@@ -1,16 +1,13 @@
 from typing import Union
 import os
 import glob
-
 import numpy as np
-
 def check_files_presence(cf_results: str) -> None:
     """
     Check if there are embeddings in the ColabFold output directory.
 
     Parameters:
         cf_results (str): Path to the ColabFold output directory.
-
     Returns:
         None
     """

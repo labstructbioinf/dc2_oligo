@@ -19,7 +19,6 @@ git clone [https://github.com/labstructbioinf/dc2_oligo](https://github.com/Rmad
 ```
 
 2. Create a virtual environment (using conda, for example) and install the requirements
-
 ```
 conda create -n dc2_oligo
 cd dc2_oligo

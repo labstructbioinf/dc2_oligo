@@ -2,6 +2,7 @@ import argparse
 import glob
 import joblib
 
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import KFold
@@ -32,7 +33,6 @@ def train(
     """
 
     df = pd.read_csv("../tests/set5_homooligomers.csv", sep="\t")
-
     le = LabelEncoder()
     df['y'] = le.fit_transform(df['chains'])\
 
@@ -62,7 +62,6 @@ def train(
                 clf.fit(X_tr, y_tr)
                 results[j, i, te_idx, :] = clf.predict_proba(X_te)
                 model[f"clf_{j}_{i}_{k}"] = clf
-
     y_pred_bin = results.mean(axis=0).mean(axis=0).argmax(axis=1)
     results_ = {}
     results_["accuracy"] = accuracy_score(y, y_pred_bin)
@@ -74,6 +73,7 @@ def train(
     if output_dir:
         joblib.dump(model, f"{output_dir}/model.p")
         df.to_csv(f'{output_dir}/results.csv')
+
     print(results_)
 
     return results_, model, df
