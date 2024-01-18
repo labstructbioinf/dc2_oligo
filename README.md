@@ -15,7 +15,7 @@ colabfold_batch 0_monomer.csv . --num-models 5 --model-type alphafold2_multimer_
 
 1. Clone repository
 ```
-git clone [https://github.com/labstructbioinf/dc2_oligo](https://github.com/Rmadeye/dc2_oligo/)
+git clone https://github.com/labstructbioinf/dc2_oligo](https://github.com/Rmadeye/dc2_oligo/
 ```
 
 2. Create a virtual environment (using conda, for example) and install the requirements
